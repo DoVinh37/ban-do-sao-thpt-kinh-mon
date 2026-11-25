@@ -338,11 +338,11 @@ def build_page_1(pdf):
             color="#111111", lw=0.85, zorder=10
         )
 
-        # Tên tháng in hoa nằm vòng theo mép trong vành trắng
+        # Tên tháng in hoa nằm vòng theo mép ngoài vành trắng (dễ đọc, không vướng vạch ngày)
         rad_m = np.deg2rad(theta_mid)
-        r_m_txt = 84.8
+        r_m_txt = 91.8
         rot_m = theta_mid - 90.0
-        if -90.0 > (rot_m % 360.0 - 360.0) and np.sin(rad_m) < -0.15:
+        if np.sin(rad_m) < -0.15:
             rot_m += 180.0
         ax.text(
             CX + r_m_txt * np.cos(rad_m), CY + r_m_txt * np.sin(rad_m),
@@ -350,18 +350,18 @@ def build_page_1(pdf):
             ha="center", va="center", rotation=rot_m, rotation_mode="anchor", zorder=11
         )
 
-        # Vạch chia từng ngày & nhãn 5–10–15–20–25
+        # Vạch chia từng ngày nằm ở mép TRONG (R = 82 mm) để tiếp giáp trực tiếp với vòng giờ Mặt che
         for d in range(1, n_days + 1):
             theta_d = 90.0 - (day_counter - vernal_equinox_day_idx) * deg_per_day
             rad_d = np.deg2rad(theta_d)
             if d in (5, 10, 15, 20, 25):
-                r_in = 91.4
+                r_out = 85.5
                 ax.plot(
-                    [CX + r_in * np.cos(rad_d), CX + R_DISC1_OUT * np.cos(rad_d)],
-                    [CY + r_in * np.sin(rad_d), CY + R_DISC1_OUT * np.sin(rad_d)],
-                    color="#111111", lw=0.6, zorder=10
+                    [CX + R_DISC1_SKY * np.cos(rad_d), CX + r_out * np.cos(rad_d)],
+                    [CY + R_DISC1_SKY * np.sin(rad_d), CY + r_out * np.sin(rad_d)],
+                    color="#111111", lw=0.65, zorder=10
                 )
-                r_num = 89.2
+                r_num = 87.6
                 rot_num = theta_d - 90.0
                 if np.sin(rad_d) < -0.15:
                     rot_num += 180.0
@@ -371,11 +371,11 @@ def build_page_1(pdf):
                     ha="center", va="center", rotation=rot_num, rotation_mode="anchor", zorder=11
                 )
             elif d != 1:
-                r_in = 93.0
+                r_out = 84.0
                 ax.plot(
-                    [CX + r_in * np.cos(rad_d), CX + R_DISC1_OUT * np.cos(rad_d)],
-                    [CY + r_in * np.sin(rad_d), CY + R_DISC1_OUT * np.sin(rad_d)],
-                    color="#444444", lw=0.35, zorder=10
+                    [CX + R_DISC1_SKY * np.cos(rad_d), CX + r_out * np.cos(rad_d)],
+                    [CY + R_DISC1_SKY * np.sin(rad_d), CY + r_out * np.sin(rad_d)],
+                    color="#444444", lw=0.38, zorder=10
                 )
             day_counter += 1
 
