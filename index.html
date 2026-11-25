@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bản đồ sao quay 21° Bắc — Trường THPT Kinh Môn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0d14;
+    --surface: #11141c;
+    --raised: #1a1e28;
+    --deep: #07080d;
+    --hairline: rgba(238, 240, 245, 0.08);
+    --hairline-strong: rgba(238, 240, 245, 0.16);
+    --text-primary: #eef0f5;
+    --text-secondary: #a3a9b8;
+    --text-muted: #7a8296;
+    --accent: #d9b45a;
+    --accent-soft: rgba(217, 180, 90, 0.14);
+    --ok: #4cc38a;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  .mono {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Navigation */
+  .nav {
+    border-bottom: 1px solid var(--hairline);
+    background-color: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    height: 64px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--text-primary);
+  }
+
+  .reticle {
+    width: 20px;
+    height: 20px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .brand-name {
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 140ms var(--ease);
+  }
+
+  .nav-links a:hover { color: var(--text-primary); }
+
+  .nav-coord {
+    font-size: 12px;
+    color: var(--text-muted);
+    letter-spacing: 0.01em;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* Main container */
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* Hero: Asymmetric split */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    gap: 48px;
+    align-items: center;
+    padding: 64px 0 64px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .hero-meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .hero-meta .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--accent);
+  }
+
+  .hero h1 {
+    font-size: 48px;
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 20px;
+  }
+
+  .hero-lead {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    max-width: 34rem;
+    margin-bottom: 32px;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: background-color 140ms var(--ease), border-color 140ms var(--ease), color 140ms var(--ease), transform 140ms var(--ease);
+  }
+
+  .btn:active { transform: scale(0.98); }
+
+  .btn:focus-visible, a:focus-visible, input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .btn-primary {
+    background-color: var(--text-primary);
+    color: var(--bg);
+  }
+
+  .btn-primary:hover { background-color: #ffffff; }
+
+  .btn-secondary {
+    background-color: var(--raised);
+    color: var(--text-primary);
+    border-color: var(--hairline-strong);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .btn-secondary:hover {
+    background-color: #222736;
+    border-color: rgba(238, 240, 245, 0.24);
+  }
+
+  .icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .team-line {
+    padding-top: 20px;
+    border-top: 1px solid var(--hairline);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, auto));
+    gap: 16px 24px;
+    max-width: 34rem;
+  }
+
+  .spec-item { display: flex; flex-direction: column; gap: 4px; }
+  .spec-label { font-size: 12px; color: var(--text-muted); }
+  .spec-val { font-size: 14px; font-weight: 500; color: var(--text-primary); }
+
+  /* Hero Moment: Interactive 21°N Planisphere Instrument */
+  .instrument-panel {
+    background-color: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .instrument-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+
+  .instrument-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .instrument-readout {
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .dial-stage {
+    background-color: var(--deep);
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dial-stage svg {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    display: block;
+  }
+
+  .dial-controls {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .dial-controls label {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .dial-controls input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent);
+    cursor: pointer;
+    height: 4px;
+  }
+
+  .dial-reset {
+    height: 28px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid var(--hairline-strong);
+    background-color: var(--raised);
+    color: var(--text-secondary);
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    transition: color 140ms var(--ease), border-color 140ms var(--ease);
+  }
+
+  .dial-reset:hover {
+    color: var(--text-primary);
+    border-color: rgba(238, 240, 245, 0.28);
+  }
+
+  /* Sections */
+  .section {
+    padding: 48px 0 0;
+  }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .section-head h2 {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: var(--text-primary);
+  }
+
+  .section-head p {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* Asymmetric 2-column deliverables grid */
+  .deliverables {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  .card {
+    background-color: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    padding: 24px;
+  }
+
+  .card-index {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .card h3 {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .card-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  /* Compact stats inside featured card */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    padding: 16px 0;
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 20px;
+  }
+
+  .stat-cell { display: flex; flex-direction: column; gap: 4px; }
+  .stat-num { font-size: 20px; font-weight: 500; color: var(--text-primary); line-height: 1.1; }
+  .stat-cap { font-size: 12px; color: var(--text-muted); }
+
+  /* Action rows inside cards */
+  .row-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background-color: var(--raised);
+    border: 1px solid var(--hairline);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color 140ms var(--ease), border-color 140ms var(--ease);
+  }
+
+  .action-row:hover {
+    background-color: #222736;
+    border-color: var(--hairline-strong);
+  }
+
+  .action-row-main {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .action-row-main .icon { color: var(--text-muted); }
+  .action-row:hover .action-row-main .icon { color: var(--text-primary); }
+
+  .action-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .action-meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Keycaps for Stellarium shortcuts */
+  .keycap-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .key-item { display: inline-flex; align-items: center; gap: 6px; }
+
+  kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 4px;
+    background-color: var(--raised);
+    border: 1px solid var(--hairline-strong);
+    color: var(--text-primary);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+  }
+
+  /* AI Evidence Ledger */
+  .ledger {
+    background-color: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .ledger-row {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--hairline);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 140ms var(--ease);
+  }
+
+  .ledger-row:last-child { border-bottom: none; }
+  .ledger-row:hover { background-color: var(--raised); }
+
+  .ledger-tag {
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .ledger-body h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+
+  .ledger-body p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
+
+  .ledger-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .ledger-row:hover .ledger-link { color: var(--text-primary); }
+
+  /* Footer */
+  footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 24px 48px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 40px 0 48px; gap: 32px; }
+    .hero h1 { font-size: 36px; }
+    .deliverables { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ledger-row { grid-template-columns: 1fr; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <svg class="reticle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <circle cx="10" cy="10" r="6"/>
+        <path d="M10 1v4M10 15v4M1 10h4M15 10h4"/>
+      </svg>
+      <span class="brand-name">Bản đồ sao Kinh Môn</span>
+    </a>
+    <nav class="nav-links" aria-label="Điều hướng chính">
+      <a href="#san-pham">Sản phẩm</a>
+      <a href="#ho-so-ai">Hồ sơ tương tác AI</a>
+      <a href="03_Bao_Cao_Va_Ho_So_AI/BAO_CAO_THU_NGHIEM_SUA_LOI_VA_GIOI_HAN.html">Báo cáo thử nghiệm</a>
+    </nav>
+    <div class="nav-coord mono">20.99° N · 106.55° E</div>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div>
+      <div class="hero-meta">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Trường THPT Kinh Môn, phường Kinh Môn, Hải Phòng</span>
+      </div>
+      <h1>Bản đồ sao quay 21° Bắc và mô phỏng bầu trời đêm</h1>
+      <p class="hero-lead">
+        Bộ sản phẩm thực hành chuyên đề Vật lí 10 do nhóm học sinh lớp 11A thiết kế, thử nghiệm và kiểm chứng chéo giữa bản đồ sao quay giấy, ứng dụng Web và Stellarium 3D.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="02_Mo_Phong_Dien_Tu/ban_do_sao_quay_thpt_kinh_mon.html">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+          </svg>
+          <span>Mở bản đồ sao điện tử</span>
+        </a>
+        <a class="btn btn-secondary" href="01_Ban_Do_Sao_Giay/BanDoSaoQuay_THPT_KinhMon_A4.pdf" target="_blank">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+          </svg>
+          <span>Xem bản in A4 chuẩn</span>
+        </a>
+      </div>
+      <div class="team-line">
+        <div class="spec-item">
+          <span class="spec-label">Mốc mặc định</span>
+          <span class="spec-val mono">20:00 UTC+7</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Khả năng xoay</span>
+          <span class="spec-val mono">365 ngày · 24 giờ</span>
+        </div>
+        <div class="spec-item">
+          <span class="spec-label">Nhóm thực hiện</span>
+          <span class="spec-val">5 học sinh lớp 11A</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive 21°N Planisphere Instrument -->
+    <div class="instrument-panel" aria-label="Mô hình xem nhanh góc xoay đĩa sao 21° Bắc">
+      <div class="instrument-head">
+        <span class="instrument-title">Mô phỏng cửa sổ chân trời vĩ độ 21° Bắc</span>
+        <span class="instrument-readout mono" id="hourReadout">24/11 · 20:00</span>
+      </div>
+      <div class="dial-stage">
+        <svg viewBox="0 0 360 360" role="img" aria-label="Đĩa sao quay và mặt che bầu dục cho vĩ độ 21 độ Bắc tại Trường THPT Kinh Môn">
+          <defs>
+            <clipPath id="skyWindow">
+              <ellipse cx="180" cy="212" rx="112" ry="82"/>
+            </clipPath>
+          </defs>
+
+          <!-- Outer blue horizon mask ring -->
+          <circle cx="180" cy="180" r="168" fill="#13254d" stroke="rgba(238,240,245,0.16)" stroke-width="1"/>
+          <circle cx="180" cy="180" r="144" fill="#0f1d3d" stroke="rgba(238,240,245,0.1)" stroke-width="1"/>
+
+          <!-- Hour markers around outer rim (CCW 0h top) -->
+          <g id="hourTicks" font-family="IBM Plex Mono, monospace" font-size="9" fill="#a3a9b8" text-anchor="middle"></g>
+
+          <!-- Masked dark night sky visible through 21°N oval -->
+          <ellipse cx="180" cy="212" rx="112" ry="82" fill="#080e1f"/>
+          <g clip-path="url(#skyWindow)">
+            <g id="starDisk" transform="rotate(0 180 156)">
+              <!-- Equator & Ecliptic dashed circles -->
+              <circle cx="180" cy="156" r="78" fill="none" stroke="rgba(163,169,184,0.22)" stroke-width="0.9" stroke-dasharray="3 3"/>
+              <circle cx="180" cy="176" r="82" fill="none" stroke="rgba(217,180,90,0.28)" stroke-width="0.9" stroke-dasharray="4 3"/>
+
+              <!-- Constellation lines (representative 21°N sky) -->
+              <!-- Ursa Major -->
+              <polyline points="145,186 154,193 164,194 173,200 185,204 188,195 175,193" fill="none" stroke="rgba(238,240,245,0.45)" stroke-width="1"/>
+              <!-- Cassiopeia -->
+              <polyline points="200,126 208,134 216,129 224,137 232,130" fill="none" stroke="rgba(238,240,245,0.45)" stroke-width="1"/>
+              <!-- Orion -->
+              <polyline points="118,224 134,218 139,240 124,244 118,224" fill="none" stroke="rgba(238,240,245,0.45)" stroke-width="1"/>
+              <line x1="125" y1="232" x2="133" y2="230" stroke="rgba(238,240,245,0.6)" stroke-width="1.1"/>
+              <!-- Cygnus -->
+              <polyline points="234,176 222,190 212,202" fill="none" stroke="rgba(238,240,245,0.4)" stroke-width="1"/>
+              <polyline points="210,180 222,190 236,198" fill="none" stroke="rgba(238,240,245,0.4)" stroke-width="1"/>
+              <!-- Pegasus Square -->
+              <polygon points="222,220 242,218 244,238 224,240" fill="none" stroke="rgba(238,240,245,0.4)" stroke-width="1"/>
+              <!-- Taurus -->
+              <polyline points="140,206 150,214 162,216 152,222 140,206" fill="none" stroke="rgba(238,240,245,0.4)" stroke-width="1"/>
+              <!-- Leo -->
+              <polyline points="168,246 178,240 186,246 180,256 196,260 206,252" fill="none" stroke="rgba(238,240,245,0.4)" stroke-width="1"/>
+
+              <!-- Key Stars -->
+              <g fill="#eef0f5">
+                <circle cx="145" cy="186" r="2"/><circle cx="154" cy="193" r="1.7"/><circle cx="164" cy="194" r="1.7"/>
+                <circle cx="173" cy="200" r="1.8"/><circle cx="185" cy="204" r="2.2"/><circle cx="188" cy="195" r="2.1"/><circle cx="175" cy="193" r="1.6"/>
+                <circle cx="200" cy="126" r="1.8"/><circle cx="208" cy="134" r="1.9"/><circle cx="216" cy="129" r="1.8"/><circle cx="224" cy="137" r="1.7"/><circle cx="232" cy="130" r="1.6"/>
+                <circle cx="118" cy="224" r="2.4" fill="#f5c97a"/><circle cx="134" cy="218" r="1.8"/><circle cx="139" cy="240" r="2.5"/><circle cx="124" cy="244" r="1.9"/>
+                <circle cx="234" cy="176" r="2.1"/><circle cx="222" cy="190" r="1.7"/><circle cx="212" cy="202" r="1.7"/>
+                <circle cx="150" cy="214" r="2.1" fill="#f5c97a"/><circle cx="196" cy="260" r="2"/>
+                <circle cx="110" cy="262" r="2.6"/>
+                <circle cx="246" cy="192" r="2.2"/>
+                <circle cx="258" cy="212" r="2.0"/>
+                <!-- Background field stars -->
+                <circle cx="132" cy="166" r="1" opacity="0.6"/><circle cx="196" cy="170" r="1" opacity="0.6"/>
+                <circle cx="162" cy="226" r="1" opacity="0.6"/><circle cx="208" cy="228" r="1.1" opacity="0.65"/>
+                <circle cx="148" cy="264" r="1" opacity="0.55"/><circle cx="228" cy="264" r="1" opacity="0.55"/>
+                <circle cx="104" cy="200" r="1" opacity="0.55"/><circle cx="256" cy="164" r="1" opacity="0.55"/>
+              </g>
+
+              <!-- Constellation labels -->
+              <g font-family="IBM Plex Sans, sans-serif" font-size="8.5" fill="rgba(238,240,245,0.72)">
+                <text x="150" y="180">Gấu Lớn</text>
+                <text x="206" y="121">Thiên Hậu</text>
+                <text x="106" y="216">Lạp Hộ</text>
+                <text x="148" y="206">Kim Ngưu</text>
+                <text x="228" y="170">Thiên Nga</text>
+                <text x="224" y="250">Phi Mã</text>
+                <text x="174" y="272">Sư Tử</text>
+              </g>
+            </g>
+          </g>
+
+          <!-- Dashed brass horizon cutout border -->
+          <ellipse cx="180" cy="212" rx="112" ry="82" fill="none" stroke="#d9b45a" stroke-width="1.5" stroke-dasharray="5 4"/>
+
+          <!-- Polaris pivot crosshair (Signature reticle) -->
+          <g stroke="#e5484d" stroke-width="1.2">
+            <circle cx="180" cy="156" r="4" fill="none"/>
+            <line x1="180" y1="147" x2="180" y2="165"/>
+            <line x1="171" y1="156" x2="189" y2="156"/>
+          </g>
+          <text x="195" y="159" text-anchor="start" font-family="IBM Plex Sans, sans-serif" font-size="8.5" fill="#d9b45a">Sao Bắc Cực</text>
+
+          <!-- Title inside top mask area -->
+          <text x="180" y="74" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="11" font-weight="500" fill="#d9b45a">Bản đồ sao quay</text>
+          <text x="180" y="90" text-anchor="middle" font-family="IBM Plex Sans, sans-serif" font-size="10" font-weight="500" fill="#eef0f5">Trường THPT Kinh Môn</text>
+          <text x="180" y="105" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8.5" fill="#a3a9b8">21° N · Phường Kinh Môn, Hải Phòng</text>
+
+          <!-- Cardinal directions -->
+          <g font-family="IBM Plex Sans, sans-serif" font-size="9.5" font-weight="500" fill="#d9b45a" text-anchor="middle">
+            <text x="180" y="124">Bắc</text>
+            <text x="180" y="307">Nam</text>
+            <text x="58" y="215">Đông</text>
+            <text x="302" y="215">Tây</text>
+          </g>
+        </svg>
+      </div>
+      <div class="dial-controls">
+        <label for="hourSlider">Xoay giờ đêm</label>
+        <input type="range" id="hourSlider" min="18" max="28" step="0.5" value="20" aria-label="Điều chỉnh giờ quan sát từ 18h đến 4h sáng">
+        <button type="button" class="dial-reset" id="resetHour">20:00</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deliverables: Asymmetric 2-column grid -->
+  <section class="section" id="san-pham">
+    <div class="section-head">
+      <h2>Sản phẩm và tài liệu nộp bài</h2>
+      <p>Đầy đủ bản in A4, mô phỏng điện tử và báo cáo thực nghiệm</p>
+    </div>
+
+    <div class="deliverables">
+      <!-- Featured Left Column: Paper Planisphere & Reports -->
+      <article class="card">
+        <div class="card-index mono">01 · Bản đồ giấy và báo cáo</div>
+        <h3>Bản đồ sao quay giấy 21° Bắc và báo cáo thực nghiệm</h3>
+        <p class="card-desc">
+          Thiết kế theo đúng tọa độ Trường THPT Kinh Môn (phường Kinh Môn, Hải Phòng), kèm mã nguồn Python xuất PDF 1:1 và báo cáo chi tiết lỗi đã sửa cùng giới hạn sử dụng.
+        </p>
+
+        <div class="stat-strip">
+          <div class="stat-cell">
+            <span class="stat-num mono">21° N</span>
+            <span class="stat-cap">Vĩ độ thiết kế</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-num mono">33</span>
+            <span class="stat-cap">Chòm sao Việt</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-num mono">5,0 cm</span>
+            <span class="stat-cap">Thước kiểm 1:1</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-num mono">300 gsm</span>
+            <span class="stat-cap">Giấy bìa in màu</span>
+          </div>
+        </div>
+
+        <div class="row-list">
+          <a class="action-row" href="01_Ban_Do_Sao_Giay/BanDoSaoQuay_THPT_KinhMon_A4.pdf" target="_blank">
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <span class="action-title">Bản in A4 từ mã nguồn Chat 1 (Phường Kinh Môn)</span>
+            </span>
+            <span class="action-meta mono">PDF · 2 trang</span>
+          </a>
+
+          <a class="action-row" href="01_Ban_Do_Sao_Giay/Ban_do_sao_quay_21N_THPT_Kinh_Mon_IN_A4_Chuan.pdf" target="_blank">
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+              </svg>
+              <span class="action-title">Bản in A4 bản hiệu chỉnh địa danh gốc</span>
+            </span>
+            <span class="action-meta mono">PDF · 2 trang</span>
+          </a>
+
+          <a class="action-row" href="01_Ban_Do_Sao_Giay/tao_ban_do_sao.py" download>
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <polyline points="16 18 22 12 16 6"/>
+                <polyline points="8 6 2 12 8 18"/>
+              </svg>
+              <span class="action-title">Mã nguồn Python xuất bản đồ sao A4</span>
+            </span>
+            <span class="action-meta mono">tao_ban_do_sao.py</span>
+          </a>
+
+          <a class="action-row" href="03_Bao_Cao_Va_Ho_So_AI/BAO_CAO_THU_NGHIEM_SUA_LOI_VA_GIOI_HAN.html">
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M9 11l3 3L22 4"/>
+                <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+              </svg>
+              <span class="action-title">Báo cáo thử nghiệm, sửa lỗi và giới hạn sử dụng</span>
+            </span>
+            <span class="action-meta mono">In / Lưu PDF</span>
+          </a>
+
+          <a class="action-row" href="03_Bao_Cao_Va_Ho_So_AI/BAO_CAO_QUA_TRINH_THUC_HIEN.html">
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                <line x1="7" y1="9" x2="17" y2="9"/>
+                <line x1="7" y1="13" x2="14" y2="13"/>
+              </svg>
+              <span class="action-title">Nhật kí quá trình thực hiện kỹ thuật (kèm ảnh chụp)</span>
+            </span>
+            <span class="action-meta mono">In / Lưu PDF</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- Right Column: Electronic Simulation & Stellarium -->
+      <article class="card">
+        <div class="card-index mono">02 · Mô phỏng điện tử 3D</div>
+        <h3>Stellarium 26.3 và bản đồ sao Web</h3>
+        <p class="card-desc">
+          Kết hợp mô phỏng vòm trời 3D trên Stellarium (kịch bản tự động 4 phân đoạn) với phiên bản Web mở trực tiếp không cần cài đặt.
+        </p>
+
+        <div class="row-list">
+          <a class="action-row" href="02_Mo_Phong_Dien_Tu/ban_do_sao_quay_thpt_kinh_mon.html">
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+              </svg>
+              <span class="action-title">Bản đồ sao quay điện tử (Web HTML)</span>
+            </span>
+            <span class="action-meta mono">195 sao</span>
+          </a>
+
+          <a class="action-row" href="https://stellarium-web.org/" target="_blank" rel="noopener">
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="2" y1="12" x2="22" y2="12"/>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+              </svg>
+              <span class="action-title">Stellarium Web trực tuyến</span>
+            </span>
+            <span class="action-meta mono">stellarium-web.org</span>
+          </a>
+
+          <a class="action-row" href="https://stellarium.org/" target="_blank" rel="noopener">
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span class="action-title">Tải phần mềm Stellarium bản máy tính</span>
+            </span>
+            <span class="action-meta mono">v26.3</span>
+          </a>
+
+          <a class="action-row" href="02_Mo_Phong_Dien_Tu/stellarium/thpt_kinh_mon_sky_demo.ssc" download>
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <polygon points="5 3 19 12 5 21 5 3"/>
+              </svg>
+              <span class="action-title">Kịch bản tự động mô phỏng 4 phần</span>
+            </span>
+            <span class="action-meta mono">.ssc</span>
+          </a>
+
+          <a class="action-row" href="02_Mo_Phong_Dien_Tu/stellarium/user_locations.txt" download>
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+              <span class="action-title">Tệp vị trí cố định THPT Kinh Môn</span>
+            </span>
+            <span class="action-meta mono">.txt</span>
+          </a>
+
+          <a class="action-row" href="02_Mo_Phong_Dien_Tu/HUONG_DAN_STELLARIUM.md" target="_blank">
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              <span class="action-title">Hướng dẫn cài đặt và chạy kịch bản</span>
+            </span>
+            <span class="action-meta mono">Markdown</span>
+          </a>
+        </div>
+
+        <div class="keycap-bar" aria-label="Phím tắt chính trên Stellarium">
+          <span class="key-item"><kbd>F6</kbd> Vị trí</span>
+          <span class="key-item"><kbd>F5</kbd> Giờ 20:00</span>
+          <span class="key-item"><kbd>C</kbd><kbd>V</kbd><kbd>R</kbd> Chòm sao</span>
+          <span class="key-item"><kbd>F12</kbd> Chạy kịch bản</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- AI Interaction Ledger -->
+  <section class="section" id="ho-so-ai">
+    <div class="section-head">
+      <h2>Hồ sơ tương tác và phản biện với AI</h2>
+      <p>Tách riêng hai phiên làm việc độc lập theo yêu cầu đánh giá</p>
+    </div>
+
+    <div class="ledger">
+      <a class="ledger-row" href="https://share.gemini.google/XrHw2EdjWOl2" target="_blank" rel="noopener">
+        <span class="ledger-tag mono">Phiên 01 · 7 lượt</span>
+        <div class="ledger-body">
+          <h3>Thiết kế, xuất bản in PDF và kiểm chứng bản đồ sao quay giấy</h3>
+          <p>Điều chỉnh từ câu hỏi lỗ tròn ban đầu sang cửa sổ bầu dục 21° Bắc, phản biện mẫu 40°–50° Bắc, kiểm chứng chiều vòng ngày–giờ, xuất mã Python tạo PDF 1:1 và tổng hợp giới hạn sử dụng.</p>
+        </div>
+        <span class="ledger-link">
+          <span>Mở hội thoại</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <line x1="7" y1="17" x2="17" y2="7"/>
+            <polyline points="7 7 17 7 17 17"/>
+          </svg>
+        </span>
+      </a>
+
+      <a class="ledger-row" href="https://share.gemini.google/VzkdoPvSJMS8" target="_blank" rel="noopener">
+        <span class="ledger-tag mono">Phiên 02 · 6 lượt</span>
+        <div class="ledger-body">
+          <h3>Mô phỏng bầu trời sao điện tử từ Web HTML sang Stellarium 3D</h3>
+          <p>So sánh bản Web HTML với Stellarium PC và Stellarium Web, kiểm chứng độ cao Sao Bắc Cực 21°, quy đổi 20:00 VN sang 13:00 UTC, viết kịch bản .ssc và ghi nhận 4 lỗi thực tế đã khắc phục.</p>
+        </div>
+        <span class="ledger-link">
+          <span>Mở hội thoại</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <line x1="7" y1="17" x2="17" y2="7"/>
+            <polyline points="7 7 17 7 17 17"/>
+          </svg>
+        </span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>Nhóm lớp 11A: Nguyễn Đỗ Vinh, Nguyễn Ngọc Diệp, Trương Thị Kim Ngân, Phạm Tuấn Dũng, Mạc Duy Nam</span>
+  <span class="mono">Trường THPT Kinh Môn · 2026</span>
+</footer>
+
+<script>
+  (function () {
+    const ticksGroup = document.getElementById('hourTicks');
+    const starDisk = document.getElementById('starDisk');
+    const slider = document.getElementById('hourSlider');
+    const readout = document.getElementById('hourReadout');
+    const resetBtn = document.getElementById('resetHour');
+
+    // Render 24h ticks counter-clockwise with 0h at top
+    for (let h = 0; h < 24; h++) {
+      const deg = -90 - h * 15;
+      const rad = deg * Math.PI / 180;
+      const r1 = 168, r2 = h % 3 === 0 ? 159 : 163, rt = 152;
+      const x1 = 180 + r1 * Math.cos(rad);
+      const y1 = 180 + r1 * Math.sin(rad);
+      const x2 = 180 + r2 * Math.cos(rad);
+      const y2 = 180 + r2 * Math.sin(rad);
+
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', x1.toFixed(1));
+      line.setAttribute('y1', y1.toFixed(1));
+      line.setAttribute('x2', x2.toFixed(1));
+      line.setAttribute('y2', y2.toFixed(1));
+      line.setAttribute('stroke', h === 20 ? '#d9b45a' : 'rgba(238,240,245,0.28)');
+      line.setAttribute('stroke-width', h % 3 === 0 ? '1.2' : '0.8');
+      ticksGroup.appendChild(line);
+
+      if (h % 2 === 0) {
+        const tx = 180 + rt * Math.cos(rad);
+        const ty = 180 + rt * Math.sin(rad) + 3;
+        const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        txt.setAttribute('x', tx.toFixed(1));
+        txt.setAttribute('y', ty.toFixed(1));
+        if (h === 20) txt.setAttribute('fill', '#d9b45a');
+        txt.textContent = h + 'h';
+        ticksGroup.appendChild(txt);
+      }
+    }
+
+    function updateDial(val) {
+      const hourVal = parseFloat(val);
+      const displayHour = Math.floor(hourVal) % 24;
+      const displayMin = (hourVal % 1) === 0.5 ? '30' : '00';
+      const angle = -(hourVal - 20) * 15; // CCW rotation around Polaris
+      starDisk.setAttribute('transform', 'rotate(' + angle + ' 180 156)');
+      readout.textContent = '24/11 · ' + String(displayHour).padStart(2, '0') + ':' + displayMin;
+    }
+
+    slider.addEventListener('input', function (e) { updateDial(e.target.value); });
+    resetBtn.addEventListener('click', function () {
+      slider.value = 20;
+      updateDial(20);
+    });
+    updateDial(20);
+  })();
+</script>
+</body>
+</html>

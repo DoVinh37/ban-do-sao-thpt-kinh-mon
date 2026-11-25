@@ -1,0 +1,123 @@
+// Name: Mo phong Bau troi sao - Truong THPT Kinh Mon
+// License: Public Domain
+// Author: Nhom hoc sinh Truong THPT Kinh Mon
+// Description: Kich ban tu dong mo phong bau troi sao, tim Sao Bac Cuc (Polaris),
+//              chuyen dong nhat dong va 12 chom sao Hoang Dao tai Truong THPT Kinh Mon (20.99 N, 106.55 E).
+
+// ============================================================
+// CAU HINH BAN DAU - VI TRI TRUONG THPT KINH MON
+// ============================================================
+core.clear("natural");
+core.setGuiVisible(true);
+
+// Dat toa do: Kinh do 106.55 E, Vi do 20.99 N, do cao 10m
+core.setObserverLocation(106.55, 20.99, 10, 1, "Truong THPT Kinh Mon", "Earth");
+
+// Dat thoi gian 20:00 gio dia phuong (UTC+7 -> 13:00 UTC)
+// Ban co the doi ngay ben duoi theo ngay trinh chieu tren lop
+core.setDate("2026-11-24T13:00:00", "utc");
+core.setTimeRate(0); // Dung thoi gian de thuyet trinh
+
+// Bat cac lop hien thi co ban
+LandscapeMgr.setFlagLandscape(true);
+LandscapeMgr.setFlagAtmosphere(true);
+LandscapeMgr.setFlagCardinalPoints(true);
+
+ConstellationMgr.setFlagLines(true);
+ConstellationMgr.setFlagLabels(true);
+ConstellationMgr.setFlagArt(false);
+ConstellationMgr.setFlagBoundaries(false);
+StarMgr.setFlagLabels(true);
+SolarSystem.setFlagLabels(true);
+
+// Ham hien thi chu thich tren man hinh
+function showBanner(text, x, y, size, color) {
+    return LabelMgr.labelScreen(text, x, y, true, size, color);
+}
+
+// ============================================================
+// PHAN 1: GIOI THIEU VI TRI & TIM SAO BAC CUC (PHUONG BAC)
+// ============================================================
+var titleId = showBanner("MO PHONG BAU TROI SAO - TRUONG THPT KINH MON (20.99° N, 106.55° E)", 40, 35, 22, "#FFD166");
+var subId = showBanner("Phan 1: Huong Bac & Xac dinh Sao Bac Cuc (Polaris) o do cao ~21°", 40, 70, 17, "#5EF2D6");
+
+// Quay camera ve huong Bac (Azimuth 0°, Altitude 25°), goc nhin rong 75°
+core.moveToAltAzi(25, 0, 2.5);
+StelMovementMgr.zoomTo(75, 2.5);
+core.wait(3.0);
+
+// Chon va danh dau Sao Bac Cuc (Polaris)
+core.selectObjectByName("Polaris", true);
+var note1 = showBanner("-> Sao Bac Cuc (Polaris) thuoc chom Gau Nho, nam gan Thien cuc Bac, cao ~21° so voi chan troi Bac.", 40, 105, 15, "#FFFFFF");
+core.wait(5.0);
+
+// ============================================================
+// PHAN 2: CHUYEN DONG NHAT DONG QUANH SAO BAC CUC
+// ============================================================
+LabelMgr.deleteLabel(subId);
+LabelMgr.deleteLabel(note1);
+subId = showBanner("Phan 2: Chuyen dong nhat dong — Cac chom sao quay nguoc chieu kim dong ho quanh Sao Bac Cuc", 40, 70, 17, "#5EF2D6");
+note1 = showBanner("-> Quan sat: Sao Bac Cuc hau nhu dung yen, con Gau Lon & Thien Hau quay quanh no!", 40, 105, 15, "#FFFFFF");
+
+// Bat luoi toa do xich dao de thay truc quay
+GridLinesMgr.setFlagEquatorGrid(true);
+core.wait(1.5);
+
+// Tua nhanh thoi gian (3600x = 1 gio/giay) trong 8 giay (tuong duong 8 tieng dem)
+core.setTimeRate(3600);
+core.wait(8.0);
+core.setTimeRate(0);
+GridLinesMgr.setFlagEquatorGrid(false);
+core.wait(1.5);
+
+// ============================================================
+// PHAN 3: DUONG HOANG DAO & CAC CHOM SAO PHUONG NAM
+// ============================================================
+LabelMgr.deleteLabel(subId);
+LabelMgr.deleteLabel(note1);
+core.selectObjectByName("", false); // Bo chon Polaris
+
+// Dat lai 20:00 toi
+core.setDate("2026-11-24T13:00:00", "utc");
+GridLinesMgr.setFlagEclipticJ2000Line(true);
+
+subId = showBanner("Phan 3: Duong Hoang Dao & Cac chom sao Hoang Dao tren bau troi Kinh Mon (20:00)", 40, 70, 17, "#FF8C69");
+note1 = showBanner("-> Duong mau vang/cam la Duong Hoang Dao noi 12 chom sao Hoang Dao nam doc theo.", 40, 105, 15, "#FFFFFF");
+
+// Quay camera sang huong Dong -> Nam -> Tay
+core.moveToAltAzi(35, 110, 3.0);
+StelMovementMgr.zoomTo(85, 3.0);
+core.wait(4.5);
+
+core.moveToAltAzi(35, 180, 3.0);
+core.wait(4.5);
+
+core.moveToAltAzi(35, 250, 3.0);
+core.wait(4.5);
+
+// ============================================================
+// PHAN 4: CHE DO BAN DO SAO QUAY 360° (NHIN THANG THIEN DINH)
+// ============================================================
+LabelMgr.deleteLabel(subId);
+LabelMgr.deleteLabel(note1);
+
+subId = showBanner("Phan 4: Toan canh Ban do sao 360° tai san Truong THPT Kinh Mon", 40, 70, 17, "#4DA3FF");
+note1 = showBanner("-> Dang tua nhanh ca dem (tu 20:00 toi den 04:00 sang)...", 40, 105, 15, "#FFFFFF");
+
+// Chuyen phep chieu Fisheye / Stereographic va nhin thang len Thien dinh (Alt = 90°)
+core.setProjectionMode("ProjectionFisheye");
+core.moveToAltAzi(90, 180, 2.5);
+StelMovementMgr.zoomTo(180, 2.5);
+core.wait(3.0);
+
+// Tua nhanh ca dem
+core.setTimeRate(2400);
+core.wait(10.0);
+core.setTimeRate(0);
+
+// Ket thuc kich ban - giu nguyen bau troi de hoc sinh tu do tuong tac
+LabelMgr.deleteLabel(subId);
+LabelMgr.deleteLabel(note1);
+subId = showBanner("Hoan thanh mo phong! Ban co the dung chuot keo de kham pha bau troi sao tu do.", 40, 70, 17, "#5EF2D6");
+core.wait(5.0);
+LabelMgr.deleteAllLabels();

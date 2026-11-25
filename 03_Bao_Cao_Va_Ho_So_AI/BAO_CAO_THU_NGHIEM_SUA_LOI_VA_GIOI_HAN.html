@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo cáo thử nghiệm, sửa lỗi và giới hạn sử dụng — Trường THPT Kinh Môn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --sheet: #fdfbf7;
+    --raised: #efe9df;
+    --hairline: rgba(31, 27, 22, 0.09);
+    --hairline-strong: rgba(31, 27, 22, 0.18);
+    --text-primary: #1f1b16;
+    --text-secondary: #5e554a;
+    --text-muted: #7b7266;
+    --accent: #1e3a8a;
+    --ok: #16a34a;
+    --warn: #b45309;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 64px;
+  }
+
+  .mono {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Quiet top bar */
+  .topbar {
+    border-bottom: 1px solid var(--hairline);
+    background-color: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+
+  .topbar-inner {
+    max-width: 960px;
+    height: 56px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 140ms var(--ease);
+  }
+
+  .back-link:hover { color: var(--text-primary); }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .coord-tag {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .reticle {
+    width: 16px;
+    height: 16px;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+  }
+
+  .btn-print {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--text-primary);
+    color: #fdfbf7;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 140ms var(--ease), transform 140ms var(--ease);
+  }
+
+  .btn-print:hover { background-color: #342e26; }
+  .btn-print:active { transform: scale(0.98); }
+
+  /* Document sheet */
+  .sheet {
+    max-width: 960px;
+    margin: 32px auto 0;
+    background-color: var(--sheet);
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    padding: 40px 48px;
+    box-shadow: 0 8px 24px rgba(31, 27, 22, 0.05);
+  }
+
+  .doc-header {
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--hairline-strong);
+    margin-bottom: 24px;
+  }
+
+  .doc-kicker {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.015em;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+  }
+
+  .doc-sub {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  /* Observatory telemetry strip */
+  .telemetry {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    background-color: var(--raised);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+
+  .tel-item { display: flex; flex-direction: column; gap: 4px; }
+  .tel-label { font-size: 12px; color: var(--text-muted); }
+  .tel-value { font-size: 15px; font-weight: 500; color: var(--text-primary); }
+
+  /* Editable metadata grid */
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 0.7fr;
+    gap: 16px 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--hairline);
+    margin-bottom: 32px;
+  }
+
+  .meta-field.full { grid-column: 1 / -1; }
+
+  .meta-field label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .meta-field input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px dashed var(--hairline-strong);
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    padding: 4px 0;
+    outline: none;
+  }
+
+  .meta-field input:focus { border-bottom-color: var(--accent); }
+
+  /* Report sections */
+  section {
+    padding-bottom: 32px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  section:last-of-type {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .sec-num {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    min-width: 24px;
+  }
+
+  h2 {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 20px 0 12px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+  }
+
+  ul, ol {
+    padding-left: 20px;
+    margin-bottom: 12px;
+  }
+
+  li {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  strong { font-weight: 600; color: var(--text-primary); }
+
+  code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    background-color: var(--raised);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--text-primary);
+  }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    margin: 12px 0 16px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  thead th {
+    background-color: var(--raised);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 13px;
+  }
+
+  tbody tr {
+    transition: background-color 140ms var(--ease);
+  }
+
+  tbody tr:hover { background-color: rgba(31, 27, 22, 0.025); }
+
+  td { color: var(--text-secondary); }
+
+  /* Quiet status dots (no glowing pills) */
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-dot.ok { background-color: var(--ok); }
+  .status-dot.warn { background-color: var(--warn); }
+
+  /* Limitations 2-column ledger */
+  .limit-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin: 16px 0;
+  }
+
+  .limit-item {
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 16px 20px;
+    background-color: var(--sheet);
+  }
+
+  .limit-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .limit-idx {
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .limit-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .limit-item p {
+    font-size: 13.5px;
+    margin-bottom: 0;
+  }
+
+  /* Note block */
+  .note-block {
+    background-color: var(--raised);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    margin-top: 16px;
+  }
+
+  .note-block p { margin-bottom: 0; color: var(--text-primary); }
+
+  a.inline-link {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    word-break: break-all;
+  }
+
+  .doc-footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 760px) {
+    .sheet { margin: 16px; padding: 24px 20px; }
+    .telemetry { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .meta-grid { grid-template-columns: 1fr; }
+    .limit-list { grid-template-columns: 1fr; }
+    .coord-tag { display: none; }
+    h1 { font-size: 26px; }
+  }
+
+  @media print {
+    body { background: #ffffff; padding: 0; }
+    .topbar { display: none !important; }
+    .sheet {
+      margin: 0;
+      padding: 0;
+      max-width: 100%;
+      border: none;
+      box-shadow: none;
+      background: #ffffff;
+    }
+    .meta-field input { border-bottom: none; }
+    section { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="../index.html">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      <span>Cổng dự án</span>
+    </a>
+    <div class="topbar-right">
+      <span class="coord-tag mono">
+        <svg class="reticle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="10" cy="10" r="6"/>
+          <path d="M10 1v4M10 15v4M1 10h4M15 10h4"/>
+        </svg>
+        20.9874° N · 106.5505° E
+      </span>
+      <button type="button" class="btn-print" onclick="window.print()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <polyline points="6 9 6 2 18 2 18 9"/>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+          <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        <span>In / Lưu PDF</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<article class="sheet">
+  <header class="doc-header">
+    <div class="doc-kicker">Chuyên đề học tập Vật lí 10 · Trường THPT Kinh Môn</div>
+    <h1>Báo cáo thử nghiệm, sửa lỗi và giới hạn sử dụng mẫu bản đồ sao quay</h1>
+    <p class="doc-sub">Địa điểm quan sát: Trường THPT Kinh Môn, phường Kinh Môn, thành phố Hải Phòng</p>
+  </header>
+
+  <div class="telemetry" aria-label="Thông số quan trắc chuẩn">
+    <div class="tel-item">
+      <span class="tel-label">Vĩ độ chuẩn</span>
+      <span class="tel-value mono">20.9874° N</span>
+    </div>
+    <div class="tel-item">
+      <span class="tel-label">Kinh độ</span>
+      <span class="tel-value mono">106.5505° E</span>
+    </div>
+    <div class="tel-item">
+      <span class="tel-label">Mốc mặc định</span>
+      <span class="tel-value mono">20:00 UTC+7</span>
+    </div>
+    <div class="tel-item">
+      <span class="tel-label">Thước kiểm in</span>
+      <span class="tel-value mono">5,0 cm (1:1)</span>
+    </div>
+    <div class="tel-item">
+      <span class="tel-label">Chòm sao bản giấy</span>
+      <span class="tel-value mono">33 chòm sao</span>
+    </div>
+  </div>
+
+  <div class="meta-grid">
+    <div class="meta-field">
+      <label for="fClass">Lớp thực hiện</label>
+      <input id="fClass" type="text" value="Lớp 11A — Chuyên đề Vật lí 10">
+    </div>
+    <div class="meta-field">
+      <label for="fDate">Ngày hoàn thiện</label>
+      <input id="fDate" class="mono" type="text" value="25/11/2026">
+    </div>
+    <div class="meta-field full">
+      <label for="fTeam">Thành viên nhóm (5 học sinh)</label>
+      <input id="fTeam" type="text" value="Nguyễn Đỗ Vinh, Nguyễn Ngọc Diệp, Trương Thị Kim Ngân, Phạm Tuấn Dũng, Mạc Duy Nam">
+    </div>
+  </div>
+
+  <!-- 01 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num mono">01</span>
+      <h2>Thông số thiết kế và mốc thời gian quan sát</h2>
+    </div>
+    <ul>
+      <li><strong>Tọa độ địa phương chuẩn:</strong> Trường THPT Kinh Môn, phường Kinh Môn, Hải Phòng — vĩ độ <strong>20.9874° N</strong> (làm tròn 21° Bắc), kinh độ <strong>106.5505° E</strong>, độ cao 10 m, múi giờ <strong>UTC+7</strong>.</li>
+      <li><strong>Mốc giờ thử nghiệm mặc định 20:00:</strong> Chọn khung 20:00 giờ Việt Nam (tương ứng <code>13:00 UTC</code>) vì sau ca học buổi chiều bầu trời đã tối hoàn toàn, thuận lợi cho học sinh kiểm chứng thực địa tại sân trường.</li>
+      <li><strong>Khả năng điều chỉnh quanh năm:</strong> Dù lấy 20:00 làm mốc đối chiếu chuẩn, mẫu bản đồ sao quay giấy và điện tử đều xoay điều chỉnh được cho bất kỳ ngày và giờ nào trong cả 365 ngày nhờ hai vòng chia ngược chiều (vòng ngày/tháng cùng chiều kim đồng hồ, vòng 24 giờ ngược chiều kim đồng hồ).</li>
+      <li><strong>Hai sản phẩm song hành:</strong> (1) Bản đồ sao quay giấy xuất từ mã Python <code>tao_ban_do_sao.py</code> ra PDF 2 trang A4 chuẩn 1:1 kèm thước kiểm <code>5,0 cm</code>; (2) Mô phỏng bầu trời điện tử gồm <strong>Stellarium 26.3</strong> (tệp <code>user_locations.txt</code> và kịch bản <code>thpt_kinh_mon_sky_demo.ssc</code>) cùng ứng dụng Web offline <code>ban_do_sao_quay_thpt_kinh_mon.html</code> (195 sao J2000).</li>
+    </ul>
+  </section>
+
+  <!-- 02 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num mono">02</span>
+      <h2>Kết quả thử nghiệm và nhật kí kiểm chứng chéo</h2>
+    </div>
+    <p>Nhóm thực hiện kiểm chứng theo 2 vòng: vòng 1 đối chiếu trong nhà giữa bản đồ giấy, bản Web HTML và phần mềm Stellarium ở cùng tọa độ <code>20.99° N, 106.55° E</code> tại mốc 20:00 (ngày 24/11 và 4 mùa); vòng 2 mang bản đồ giấy ra sân Trường THPT Kinh Môn quan sát thực tế buổi tối.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:19%;">Hạng mục</th>
+            <th style="width:26%;">Bản đồ giấy (21° N)</th>
+            <th style="width:25%;">Bản Web HTML</th>
+            <th style="width:20%;">Đối chiếu Stellarium</th>
+            <th style="width:10%;">Kết quả</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Vị trí Sao Bắc Cực</strong></td>
+            <td>Nằm đúng tâm chốt xoay, hướng chính Bắc.</td>
+            <td>Cố định tâm quay, có đường nối Merak → Dubhe (×5).</td>
+            <td>Hướng Bắc (Az ≈ 0°), độ cao góc Alt ≈ 21° (khớp vĩ độ trường).</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>Chiều nhật động (20:00 → 22:00)</strong></td>
+            <td>Xoay từ 20h sang 22h: chòm sao dịch từ Đông sang Tây, ngược chiều kim đồng hồ quanh Polaris.</td>
+            <td>Chế độ quay nhật động xoay ngược chiều kim đồng hồ quanh cực Bắc.</td>
+            <td>Tua nhanh 3600× với lưới xích đạo: khớp chiều quay và góc giờ 15°/giờ.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>Bầu trời 20:00 ngày 24/11</strong></td>
+            <td>Thiên Hậu, Tiên Nữ, Phi Mã trên cao; Kim Ngưu và Lạp Hộ mọc hướng Đông; Thiên Nga chếch Tây Bắc.</td>
+            <td>Hiển thị đồng bộ các chòm sao sáng tại 20:00 ngày 24/11.</td>
+            <td>Đặt <code>2026-11-24T13:00:00 UTC</code> (= 20:00 VN): vị trí mọc/lặn khớp.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>Đối chiếu 4 mùa lúc 20:00</strong></td>
+            <td>Xoay mốc 21/03, 21/06, 23/09, 21/12: lần lượt hiện rõ Sư Tử, Bọ Cạp, Phi Mã, Lạp Hộ.</td>
+            <td>4 nút chọn nhanh Xuân, Hạ, Thu, Đông lúc 20:00 khớp bản giấy.</td>
+            <td>Đổi ngày (<code>F5</code>) giữ nguyên 20:00: khớp các chòm sao đặc trưng từng mùa.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đạt</span></td>
+          </tr>
+          <tr>
+            <td><strong>Thực địa tại sân trường</strong></td>
+            <td>Nhận diện được Lạp Hộ, Kim Ngưu, Thiên Lang, Gấu Lớn, Thiên Hậu khi giơ bản đồ lên đầu.</td>
+            <td>Dùng tra nhanh tên tiếng Việt trước khi soi bầu trời.</td>
+            <td>Chỉnh Bortle 6–8 và chế độ đêm đỏ khớp số sao thấy bằng mắt thường.</td>
+            <td><span class="status"><span class="status-dot warn"></span>Giới hạn</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num mono">03</span>
+      <h2>Các lỗi phát hiện khi thử nghiệm và biện pháp sửa lỗi</h2>
+    </div>
+
+    <h3>Bản đồ sao quay bằng giấy</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%;">Lỗi phát hiện</th>
+            <th style="width:32%;">Nguyên nhân thực tế</th>
+            <th style="width:36%;">Biện pháp đã sửa</th>
+            <th style="width:10%;">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Nhầm địa danh trên mặt che</strong></td>
+            <td>Bản nháp đầu ghi Trần Liễu, Hải Phòng thay vì đúng địa bàn Trường THPT Kinh Môn.</td>
+            <td>Sửa trực tiếp trên bản in A4 và mã nguồn Python thành <strong>Phường Kinh Môn, Hải Phòng</strong>.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đã sửa</span></td>
+          </tr>
+          <tr>
+            <td><strong>Co tỷ lệ khi in thử</strong></td>
+            <td>Chế độ mặc định Fit to page làm thanh thước 5,0 cm co còn 4,7 cm, gây lệch khớp viền 2 đĩa.</td>
+            <td>In bắt buộc ở chế độ <strong>Actual Size (100%)</strong> và đo trực tiếp bằng thước kẻ đúng <code>5,0 cm</code>.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đã sửa</span></td>
+          </tr>
+          <tr>
+            <td><strong>Lỏng chốt xoay và ẩm giấy</strong></td>
+            <td>Đục lỗ chốt rộng làm đĩa xệ sau nhiều lần xoay (sai mốc 20:00); giấy thường mềm dễ cong sương đêm.</td>
+            <td>Bấm chốt đúng dấu chữ thập đỏ, thêm vòng đệm giấy cứng, in bìa <strong>300 gsm</strong> và cán màng mỏng chống ẩm.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đã sửa</span></td>
+          </tr>
+          <tr>
+            <td><strong>Nhầm hướng Đông – Tây</strong></td>
+            <td>Quen nhìn bản đồ địa lí trải dưới bàn (Đông bên phải) nên bị ngược khi soi bầu trời.</td>
+            <td>Thống nhất thao tác cầm giơ bản đồ lên trên đầu, quay chữ Bắc về phía Bắc (Đông bên trái, Tây bên phải).</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đã sửa</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Mô phỏng bầu trời sao điện tử</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:22%;">Lỗi phát hiện</th>
+            <th style="width:32%;">Nguyên nhân thực tế</th>
+            <th style="width:36%;">Biện pháp đã sửa</th>
+            <th style="width:10%;">Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hỏng tệp cài Stellarium</strong></td>
+            <td>Tải thủ công bị gián đoạn báo lỗi <code>The source file is corrupted</code> tại tệp <code>cwar.png</code>.</td>
+            <td>Gỡ bản lỗi và cài qua <code>winget</code> (tự kiểm tra mã băm SHA-256) thành công Stellarium 26.3.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đã sửa</span></td>
+          </tr>
+          <tr>
+            <td><strong>Lệch múi giờ và vị trí mặc định</strong></td>
+            <td>Mở lần đầu hiện bầu trời 08:36 sáng và múi giờ <code>UTC+01:00</code>.</td>
+            <td>Tạo <code>user_locations.txt</code> (20.9874° N, 106.5505° E, <code>Asia/Ho_Chi_Minh</code>), đổi Tiếng Việt, quy đổi <code>13:00 UTC = 20:00 VN</code>.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đã sửa</span></td>
+          </tr>
+          <tr>
+            <td><strong>Giật, nhấp nháy (~17 FPS)</strong></td>
+            <td>Đọc <code>log.txt</code> thấy phần mềm chạy trên Intel UHD Graphics cũ; máy không card rời giật mạnh khi tua nhanh.</td>
+            <td>Ép <code>stellarium.exe</code> chạy trên <strong>NVIDIA GTX 1650</strong> đạt ổn định <strong>59–60 FPS</strong>; giữ thêm Web HTML và giới thiệu Stellarium Web cho máy yếu.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đã sửa</span></td>
+          </tr>
+          <tr>
+            <td><strong>Chói màn hình ngoài sân trường</strong></td>
+            <td>Màn hình sáng làm mất thích nghi bóng tối; AR điện thoại bị nhiễu la bàn từ gần nhà bê tông.</td>
+            <td>Bật chế độ đêm đỏ (Night Mode) trên Stellarium, không phụ thuộc AR điện thoại khi định hướng.</td>
+            <td><span class="status"><span class="status-dot ok"></span>Đã sửa</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num mono">04</span>
+      <h2>Giới hạn sử dụng khoa học và hướng cải tiến</h2>
+    </div>
+
+    <div class="limit-list">
+      <div class="limit-item">
+        <div class="limit-head">
+          <span class="limit-idx mono">01</span>
+          <h4>Phụ thuộc vĩ độ địa phương (21° Bắc)</h4>
+        </div>
+        <p>Đường cắt cửa sổ bầu dục tính riêng cho vĩ độ 21° Bắc. Mẫu dùng tốt quanh Đồng bằng Bắc Bộ, nhưng lệch quá ±5° vĩ độ sẽ làm sai thời điểm mọc, lặn của các chòm sao.</p>
+      </div>
+
+      <div class="limit-item">
+        <div class="limit-head">
+          <span class="limit-idx mono">02</span>
+          <h4>Độ lệch giờ theo kinh độ (~6,2 phút)</h4>
+        </div>
+        <p>Kinh Môn ở 106.55° E, lệch +1.55° về phía Đông so với kinh tuyến chuẩn múi giờ UTC+7 (105° E), nên bầu trời thực tế đi trước giờ đồng hồ khoảng 6,2 phút (cộng thêm dao động phương trình thời gian trong năm).</p>
+      </div>
+
+      <div class="limit-item">
+        <div class="limit-head">
+          <span class="limit-idx mono">03</span>
+          <h4>Biến dạng phép chiếu ở chân trời Nam</h4>
+        </div>
+        <p>Chiếu thiên cầu lên đĩa phẳng quanh cực Bắc làm các chòm sao có xích vĩ âm sâu (từ -40° tới -69° như Nam Thập Tự, Bán Nhân Mã) bị kéo giãn theo phương ngang.</p>
+      </div>
+
+      <div class="limit-item">
+        <div class="limit-head">
+          <span class="limit-idx mono">04</span>
+          <h4>Không hiển thị thiên thể chuyển động nhanh</h4>
+        </div>
+        <p>Đĩa giấy chỉ cố định vị trí các định tinh, không vẽ được Mặt Trời, Mặt Trăng và các hành tinh di chuyển liên tục dọc Hoàng đạo; cần tra bổ sung trên Stellarium.</p>
+      </div>
+
+      <div class="limit-item">
+        <div class="limit-head">
+          <span class="limit-idx mono">05</span>
+          <h4>Ô nhiễm ánh sáng và vật cản sân trường</h4>
+        </div>
+        <p>Đèn đường khu vực Kinh Môn (Bortle 6–8) che khuất các sao mờ cấp sao lớn hơn 3,5–4; dãy nhà học và cây quanh sân che mất vùng bầu trời dưới độ cao góc 12°–15°.</p>
+      </div>
+
+      <div class="limit-item">
+        <div class="limit-head">
+          <span class="limit-idx mono">06</span>
+          <h4>Giới hạn phần mềm và ảnh nền 360°</h4>
+        </div>
+        <p>Stellarium bản máy tính cần cài đặt và GPU ổn định để đạt 60 FPS; bản Web HTML mới có 195 sao sáng; nền landscape chưa có ảnh panorama 360° chụp thật ngay giữa sân trường.</p>
+      </div>
+    </div>
+
+    <div class="note-block">
+      <p><strong>Hướng cải tiến tiếp theo:</strong> Chụp ghép ảnh panorama 360° chuẩn la bàn ngay giữa sân Trường THPT Kinh Môn để đưa vào nền <code>landscape</code> của Stellarium; bổ sung bảng tra vị trí các hành tinh sáng theo tháng đi kèm bản đồ giấy; đính kèm video hướng dẫn dùng cả Stellarium Web và Stellarium máy tính từ A đến Z.</p>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section>
+    <div class="sec-head">
+      <span class="sec-num mono">05</span>
+      <h2>Hồ sơ tương tác AI và giải thích cá nhân</h2>
+    </div>
+    <p>Quá trình trao đổi với AI được tách thành 2 phiên độc lập, lưu đầy đủ câu hỏi ban đầu chưa chuẩn, quá trình tự điều chỉnh, kiểm chứng thông số và phản biện trực tiếp:</p>
+    <ul>
+      <li><strong>Phiên 01 — Bản đồ sao quay bằng giấy (7 lượt):</strong> <a class="inline-link" href="https://share.gemini.google/XrHw2EdjWOl2" target="_blank" rel="noopener">https://share.gemini.google/XrHw2EdjWOl2</a> — tự chỉnh từ giả thuyết lỗ tròn đồng tâm sang cửa sổ bầu dục 21° Bắc, phản biện mẫu nước ngoài 40°–50° Bắc, kiểm chứng chiều vòng ngày/giờ, lấy bảng 33 chòm sao cùng mã Python <code>tao_ban_do_sao.py</code> xuất PDF A4 1:1, đối chiếu lỗi in ấn và chốt giới hạn khoa học.</li>
+      <li><strong>Phiên 02 — Mô phỏng bầu trời điện tử (6 lượt):</strong> <a class="inline-link" href="https://share.gemini.google/VzkdoPvSJMS8" target="_blank" rel="noopener">https://share.gemini.google/VzkdoPvSJMS8</a> — thử nghiệm bản Web HTML 195 sao thấy phẳng nên chuyển sang Stellarium máy tính (so sánh thêm Stellarium Web), kiểm chứng độ cao Polaris ~21°, tốc độ góc giờ 15°/giờ và quy đổi <code>13:00 UTC = 20:00 VN</code>, viết kịch bản <code>.ssc</code> và ghi nhận 4 lỗi thực tế đã sửa.</li>
+    </ul>
+
+    <div class="note-block">
+      <p><strong>Giải thích cá nhân của nhóm:</strong> Bản đồ sao quay giấy là mô hình hình học 2D thu nhỏ của thiên cầu xoay quanh thiên cực Bắc tại vĩ độ 21° Bắc. Đặt mốc mặc định 20:00 giúp nhóm đối chiếu thống nhất, trong khi cơ chế xoay đĩa cho phép quan sát ở bất kỳ thời điểm nào trong năm. Mô phỏng điện tử trên Stellarium không thay thế bản đồ giấy mà dùng để kiểm chứng chéo mô hình 2D trên vòm trời 3D, quan sát rõ chuyển động nhật động, đường Hoàng đạo và nhận diện đúng các giới hạn thực địa tại sân Trường THPT Kinh Môn.</p>
+    </div>
+  </section>
+
+  <footer class="doc-footer">
+    <span>Nhóm học sinh lớp 11A · Trường THPT Kinh Môn, phường Kinh Môn, Hải Phòng</span>
+    <span class="mono">25/11/2026</span>
+  </footer>
+</article>
+
+</body>
+</html>
