@@ -525,6 +525,55 @@
 
   .ledger-row:hover .ledger-link { color: var(--text-primary); }
 
+  /* Tools & Stack Ledger */
+  .tools-wrap {
+    background-color: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    overflow-x: auto;
+  }
+
+  .tools-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    min-width: 680px;
+  }
+
+  .tools-table th,
+  .tools-table td {
+    padding: 14px 20px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .tools-table tr:last-child td { border-bottom: none; }
+
+  .tools-table thead th {
+    background-color: var(--raised);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 12.5px;
+  }
+
+  .tools-table td { color: var(--text-secondary); }
+  .tools-table strong { font-weight: 500; color: var(--text-primary); }
+  .tools-table tbody tr:hover { background-color: rgba(238, 240, 245, 0.025); }
+
+  .tools-link {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(217, 180, 90, 0.35);
+    transition: border-color 140ms var(--ease), color 140ms var(--ease);
+    word-break: break-all;
+  }
+
+  .tools-link:hover {
+    color: #f0cf7b;
+    border-bottom-color: #f0cf7b;
+  }
+
   /* Footer */
   footer {
     max-width: 1200px;
@@ -563,6 +612,7 @@
     <nav class="nav-links" aria-label="Điều hướng chính">
       <a href="#san-pham">Sản phẩm</a>
       <a href="#ho-so-ai">Hồ sơ tương tác AI</a>
+      <a href="#cong-cu">Công cụ đã dùng</a>
       <a href="03_Bao_Cao_Va_Ho_So_AI/BAO_CAO_THU_NGHIEM_SUA_LOI_VA_GIOI_HAN.html">Báo cáo thử nghiệm</a>
     </nav>
     <div class="nav-coord mono">20.99° N · 106.55° E</div>
@@ -815,6 +865,17 @@
             </span>
             <span class="action-meta mono">In / Lưu PDF</span>
           </a>
+
+          <a class="action-row" href="03_Bao_Cao_Va_Ho_So_AI/LINK_DOAN_CHAT_AI_VA_CONG_CU_DA_DUNG.html">
+            <span class="action-row-main">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+              </svg>
+              <span class="action-title">Tổng hợp link đoạn chat AI và công cụ đã dùng</span>
+            </span>
+            <span class="action-meta mono">Trang tổng hợp</span>
+          </a>
         </div>
       </article>
 
@@ -942,6 +1003,77 @@
           </svg>
         </span>
       </a>
+    </div>
+  </section>
+
+  <!-- Tools, AI & Websites Summary -->
+  <section class="section" id="cong-cu">
+    <div class="section-head">
+      <h2>Công cụ AI, phần mềm và trang web đã sử dụng</h2>
+      <p>Tổng hợp đầy đủ theo yêu cầu minh bạch quy trình thực hiện</p>
+    </div>
+
+    <div class="tools-wrap">
+      <table class="tools-table">
+        <thead>
+          <tr>
+            <th style="width:18%;">Nhóm công cụ</th>
+            <th style="width:24%;">Tên công cụ / Trang web</th>
+            <th style="width:26%;">Đường dẫn chính thức</th>
+            <th style="width:32%;">Vai trò trong dự án</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Trợ lí AI thảo luận</strong></td>
+            <td><strong>Google Gemini</strong></td>
+            <td><a class="tools-link mono" href="https://gemini.google.com/" target="_blank" rel="noopener">gemini.google.com</a></td>
+            <td>Thảo luận, phản biện kiến thức thiên văn, kiểm chứng công thức tọa độ 21° Bắc và viết mã Python / kịch bản Stellarium.</td>
+          </tr>
+          <tr>
+            <td><strong>Trợ lí AI điều phối</strong></td>
+            <td><strong>Antigravity</strong></td>
+            <td>Môi trường làm việc trên máy</td>
+            <td>Rà soát tệp dự án, đo kiểm bán kính PDF từng milimét, đồng bộ cấu hình Stellarium, đóng gói hồ sơ và đẩy lên GitHub.</td>
+          </tr>
+          <tr>
+            <td><strong>Tối ưu giao diện</strong></td>
+            <td><strong>Skill / Repo unslop</strong></td>
+            <td><a class="tools-link mono" href="https://heydamir.design/unslop" target="_blank" rel="noopener">heydamir.design/unslop</a></td>
+            <td>Thiết kế lại giao diện cổng dự án và các trang báo cáo HTML theo chuẩn khoa học, gọn sạch, không mang dáng mẫu AI mặc định.</td>
+          </tr>
+          <tr>
+            <td><strong>Mô phỏng thiên văn 3D</strong></td>
+            <td><strong>Stellarium 26.3 (PC)</strong></td>
+            <td><a class="tools-link mono" href="https://stellarium.org/" target="_blank" rel="noopener">stellarium.org</a></td>
+            <td>Mô phỏng vòm trời 3D tại Trường THPT Kinh Môn (20.9874° N, 106.5505° E), chạy kịch bản tự động .ssc và kiểm chứng chéo bản giấy.</td>
+          </tr>
+          <tr>
+            <td><strong>Mô phỏng trực tuyến</strong></td>
+            <td><strong>Stellarium Web</strong></td>
+            <td><a class="tools-link mono" href="https://stellarium-web.org/" target="_blank" rel="noopener">stellarium-web.org</a></td>
+            <td>Xem nhanh bầu trời sao trên điện thoại và máy yếu mà không cần cài phần mềm.</td>
+          </tr>
+          <tr>
+            <td><strong>Xuất bản in 1:1</strong></td>
+            <td><strong>Python (matplotlib, numpy, PyMuPDF)</strong></td>
+            <td><a class="tools-link mono" href="https://matplotlib.org/" target="_blank" rel="noopener">matplotlib.org</a></td>
+            <td>Vẽ chính xác 33 chòm sao và cửa sổ bầu dục 21° Bắc, xuất PDF khổ A4 chuẩn tỷ lệ 1:1 (thước 5,0 cm) và kiểm tra sai số bán kính.</td>
+          </tr>
+          <tr>
+            <td><strong>Lưu trữ và xuất bản web</strong></td>
+            <td><strong>GitHub &amp; GitHub Pages</strong></td>
+            <td><a class="tools-link mono" href="https://github.com/DoVinh37/ban-do-sao-thpt-kinh-mon" target="_blank" rel="noopener">github.com/DoVinh37/ban-do-sao-thpt-kinh-mon</a></td>
+            <td>Lưu trữ mã nguồn mở và xuất bản trang web trực tuyến để cô giáo mở xem trực tiếp mà không cần tải về máy.</td>
+          </tr>
+          <tr>
+            <td><strong>Định vị và quay dựng</strong></td>
+            <td><strong>Google Maps, winget, Game Bar, FFmpeg</strong></td>
+            <td><a class="tools-link mono" href="https://maps.google.com/" target="_blank" rel="noopener">maps.google.com</a></td>
+            <td>Lấy tọa độ GPS chính xác của trường, cài sạch Stellarium (SHA-256), ghi hình mô phỏng 60 fps và cắt ghép video minh họa.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 </main>

@@ -1,0 +1,27 @@
+LINK DOAN CHAT TRAO DOI VOI AI & TONG HOP CONG CU DA SU DUNG
+Du an Chuyen de Vat li 10 — Lop 10A — Truong THPT Kinh Mon (Phuong Kinh Mon, Hai Phong)
+Thanh vien: Nguyen Do Vinh, Nguyen Do Ngoc Diep, Truong Kim Ngan, Pham Tuan Dung, Mac Duy Nam
+========================================================================================
+
+1. HAI PHIEN DOAN CHAT TRAO DOI & PHAN BIEN VOI AI (TACH RIENG 2 NHANH):
+   - Phien 01 — Ban do sao quay bang giay (7 luot):
+     https://share.gemini.google/XrHw2EdjWOl2
+
+   - Phien 02 — Mo phong bau troi sao dien tu / Stellarium (6 luot):
+     https://share.gemini.google/VzkdoPvSJMS8
+
+2. TRANG WEB CONG DU AN & MA NGUON TRUC TUYEN:
+   - Trang web xem truc tiep (GitHub Pages):
+     https://dovinh37.github.io/ban-do-sao-thpt-kinh-mon/
+   - Kho ma nguon (GitHub):
+     https://github.com/DoVinh37/ban-do-sao-thpt-kinh-mon
+
+3. TONG HOP TAT CA CONG CU AI, PHAN MEM VA TRANG WEB DA SU DUNG:
+   - Google Gemini (https://gemini.google.com/): Thao luan, phan bien kien thuc thien van, kiem chung cong thuc 21°N va viet ma Python / kich ban .ssc.
+   - Antigravity: Moi truong dieu phoi ky thuat (do kiem PDF 1:1, dong bo cau hinh Stellarium, dong goi va day GitHub Pages).
+   - Skill / Repo unslop (https://heydamir.design/unslop): Toi uu lai giao dien trang web cong du an va bao cao khoa hoc.
+   - Stellarium 26.3 ban may tinh (https://stellarium.org/): Mo phong vom troi 3D tai Truong THPT Kinh Mon (20.9874° N, 106.5505° E), chay kich ban .ssc.
+   - Stellarium Web (https://stellarium-web.org/): Mo phong nhanh tren dien thoai/trinh duyet khong can cai dat.
+   - Python (matplotlib, numpy, PyMuPDF — https://matplotlib.org/): Ve 33 chom sao, lo bau duc 21°N va xuat ban in PDF A4 ty le 1:1 (thuoc 5,0 cm).
+   - GitHub & GitHub Pages (https://github.com/): Luu tru ma nguon va xuat ban web cong khai.
+   - Google Maps, winget, Windows Game Bar & FFmpeg: Tra toa do GPS truong, cai sach Stellarium (SHA-256), quay va dung video mo phong 60 fps.

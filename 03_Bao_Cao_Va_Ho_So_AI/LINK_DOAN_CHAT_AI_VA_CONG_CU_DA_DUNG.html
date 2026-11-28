@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đường link đoạn chat AI và tổng hợp công cụ đã dùng — Trường THPT Kinh Môn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f4ee;
+    --sheet: #fdfbf7;
+    --raised: #efe9df;
+    --hairline: rgba(31, 27, 22, 0.09);
+    --hairline-strong: rgba(31, 27, 22, 0.18);
+    --text-primary: #1f1b16;
+    --text-secondary: #5e554a;
+    --text-muted: #7b7266;
+    --accent: #1e3a8a;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 64px;
+  }
+  .mono {
+    font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  .topbar {
+    border-bottom: 1px solid var(--hairline);
+    background-color: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
+  .topbar-inner {
+    max-width: 960px;
+    height: 56px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: color 140ms var(--ease);
+  }
+  .back-link:hover { color: var(--text-primary); }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .coord-tag {
+    font-size: 12px;
+    color: var(--text-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .reticle, .icon { width: 16px; height: 16px; flex-shrink: 0; }
+  .reticle { color: var(--accent); }
+  .btn-print {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--text-primary);
+    color: #fdfbf7;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 140ms var(--ease), transform 140ms var(--ease);
+  }
+  .btn-print:hover { background-color: #342e26; }
+  .btn-print:active { transform: scale(0.98); }
+
+  .sheet {
+    max-width: 960px;
+    margin: 32px auto 0;
+    background-color: var(--sheet);
+    border: 1px solid var(--hairline);
+    border-radius: 16px;
+    padding: 40px 48px;
+    box-shadow: 0 8px 24px rgba(31, 27, 22, 0.05);
+  }
+  .doc-header {
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--hairline-strong);
+    margin-bottom: 28px;
+  }
+  .doc-kicker { font-size: 13px; font-weight: 500; color: var(--accent); margin-bottom: 8px; }
+  h1 {
+    font-size: 30px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin-bottom: 10px;
+  }
+  .doc-sub { font-size: 14px; color: var(--text-secondary); }
+
+  section {
+    padding-bottom: 32px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+  .sec-num { font-size: 13px; font-weight: 500; color: var(--accent); min-width: 24px; }
+  h2 { font-size: 20px; font-weight: 500; color: var(--text-primary); }
+  p { font-size: 14px; color: var(--text-secondary); margin-bottom: 14px; }
+
+  .chat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .chat-card {
+    background-color: var(--raised);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .chat-tag { font-size: 12px; color: var(--accent); font-weight: 500; }
+  .chat-card h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); margin: 4px 0 6px; }
+  .chat-card p { font-size: 13.5px; margin-bottom: 0; }
+  .chat-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    background-color: var(--sheet);
+    border: 1px solid var(--hairline-strong);
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 140ms var(--ease), border-color 140ms var(--ease);
+    word-break: break-all;
+  }
+  .chat-btn:hover { background-color: #ffffff; border-color: var(--accent); }
+
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td {
+    padding: 12px 16px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--hairline);
+  }
+  tr:last-child td { border-bottom: none; }
+  thead th { background-color: var(--raised); color: var(--text-primary); font-weight: 500; font-size: 13px; }
+  td { color: var(--text-secondary); }
+  strong { font-weight: 600; color: var(--text-primary); }
+  a.inline-link { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; word-break: break-all; }
+
+  .doc-footer {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  @media (max-width: 760px) {
+    .sheet { margin: 16px; padding: 24px 20px; }
+    .chat-grid { grid-template-columns: 1fr; }
+    .coord-tag { display: none; }
+  }
+  @media print {
+    body { background: #ffffff; padding: 0; }
+    .topbar { display: none !important; }
+    .sheet { margin: 0; padding: 0; max-width: 100%; border: none; box-shadow: none; background: #ffffff; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="back-link" href="../index.html">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <line x1="19" y1="12" x2="5" y2="12"/>
+        <polyline points="12 19 5 12 12 5"/>
+      </svg>
+      <span>Cổng dự án</span>
+    </a>
+    <div class="topbar-right">
+      <span class="coord-tag mono">
+        <svg class="reticle" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <circle cx="10" cy="10" r="6"/>
+          <path d="M10 1v4M10 15v4M1 10h4M15 10h4"/>
+        </svg>
+        20.9874° N · 106.5505° E
+      </span>
+      <button type="button" class="btn-print" onclick="window.print()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <polyline points="6 9 6 2 18 2 18 9"/>
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+          <rect x="6" y="14" width="12" height="8"/>
+        </svg>
+        <span>In / Lưu PDF</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<article class="sheet">
+  <header class="doc-header">
+    <div class="doc-kicker">Chuyên đề học tập Vật lí 10 · Lớp 10A · Trường THPT Kinh Môn</div>
+    <h1>Đường link đoạn chat trao đổi với AI và tổng hợp công cụ đã sử dụng</h1>
+    <p class="doc-sub">Thành viên nhóm: Nguyễn Đỗ Vinh, Nguyễn Đỗ Ngọc Diệp, Trương Kim Ngân, Phạm Tuấn Dũng, Mạc Duy Nam</p>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-num mono">01</span>
+      <h2>Hai phiên trao đổi và phản biện với AI (tách riêng theo 2 nhánh sản phẩm)</h2>
+    </div>
+    <p>Mỗi phiên hội thoại được tách độc lập, lưu đầy đủ câu hỏi ban đầu chưa chuẩn, quá trình nhận ra vấn đề để chỉnh lại câu hỏi, kiểm chứng thông số và phản biện lại AI:</p>
+
+    <div class="chat-grid">
+      <div class="chat-card">
+        <div>
+          <div class="chat-tag mono">Phiên 01 · 7 lượt trao đổi</div>
+          <h3>Bản đồ sao quay bằng giấy (21° Bắc)</h3>
+          <p>Điều chỉnh từ giả thuyết sai lỗ khoét tròn đồng tâm sang cửa sổ bầu dục vĩ độ 21° Bắc, phản biện mẫu 40°–50° Bắc nước ngoài, kiểm chứng chiều vòng ngày–giờ, xuất mã Python tạo bản in PDF A4 1:1 và chốt giới hạn khoa học.</p>
+        </div>
+        <a class="chat-btn mono" href="https://share.gemini.google/XrHw2EdjWOl2" target="_blank" rel="noopener">
+          <span>https://share.gemini.google/XrHw2EdjWOl2</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <line x1="7" y1="17" x2="17" y2="7"/>
+            <polyline points="7 7 17 7 17 17"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="chat-card">
+        <div>
+          <div class="chat-tag mono">Phiên 02 · 6 lượt trao đổi</div>
+          <h3>Mô phỏng bầu trời sao điện tử (Stellarium 3D)</h3>
+          <p>Thử nghiệm bản Web HTML thấy phẳng nên chuyển sang Stellarium máy tính và so sánh với Stellarium Web, kiểm chứng độ cao Sao Bắc Cực ~21°, quy đổi 20:00 VN sang 13:00 UTC, viết kịch bản .ssc và tổng hợp 4 lỗi thực tế đã sửa.</p>
+        </div>
+        <a class="chat-btn mono" href="https://share.gemini.google/VzkdoPvSJMS8" target="_blank" rel="noopener">
+          <span>https://share.gemini.google/VzkdoPvSJMS8</span>
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <line x1="7" y1="17" x2="17" y2="7"/>
+            <polyline points="7 7 17 7 17 17"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <span class="sec-num mono">02</span>
+      <h2>Tổng hợp tất cả công cụ AI, phần mềm và trang web đã sử dụng</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:18%;">Nhóm công cụ</th>
+            <th style="width:24%;">Tên công cụ / Trang web</th>
+            <th style="width:28%;">Đường dẫn chính thức</th>
+            <th style="width:30%;">Vai trò trong dự án</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Trợ lí AI thảo luận</strong></td>
+            <td><strong>Google Gemini</strong></td>
+            <td><a class="inline-link mono" href="https://gemini.google.com/" target="_blank" rel="noopener">gemini.google.com</a></td>
+            <td>Thảo luận, phản biện kiến thức thiên văn, kiểm chứng công thức tọa độ 21° Bắc và viết mã Python / kịch bản Stellarium.</td>
+          </tr>
+          <tr>
+            <td><strong>Trợ lí AI điều phối</strong></td>
+            <td><strong>Antigravity</strong></td>
+            <td>Môi trường làm việc trên máy</td>
+            <td>Rà soát tệp dự án, đo kiểm bán kính PDF từng milimét, đồng bộ cấu hình Stellarium, đóng gói hồ sơ và đẩy lên GitHub.</td>
+          </tr>
+          <tr>
+            <td><strong>Tối ưu giao diện</strong></td>
+            <td><strong>Skill / Repo unslop</strong></td>
+            <td><a class="inline-link mono" href="https://heydamir.design/unslop" target="_blank" rel="noopener">heydamir.design/unslop</a></td>
+            <td>Thiết kế lại giao diện cổng dự án và các trang báo cáo HTML theo chuẩn khoa học, gọn sạch, không mang dáng mẫu AI mặc định.</td>
+          </tr>
+          <tr>
+            <td><strong>Mô phỏng thiên văn 3D</strong></td>
+            <td><strong>Stellarium 26.3 (PC)</strong></td>
+            <td><a class="inline-link mono" href="https://stellarium.org/" target="_blank" rel="noopener">stellarium.org</a></td>
+            <td>Mô phỏng vòm trời 3D tại Trường THPT Kinh Môn (20.9874° N, 106.5505° E), chạy kịch bản tự động .ssc và kiểm chứng chéo bản giấy.</td>
+          </tr>
+          <tr>
+            <td><strong>Mô phỏng trực tuyến</strong></td>
+            <td><strong>Stellarium Web</strong></td>
+            <td><a class="inline-link mono" href="https://stellarium-web.org/" target="_blank" rel="noopener">stellarium-web.org</a></td>
+            <td>Xem nhanh bầu trời sao trên điện thoại và máy yếu mà không cần cài phần mềm.</td>
+          </tr>
+          <tr>
+            <td><strong>Xuất bản in 1:1</strong></td>
+            <td><strong>Python (matplotlib, numpy, PyMuPDF)</strong></td>
+            <td><a class="inline-link mono" href="https://matplotlib.org/" target="_blank" rel="noopener">matplotlib.org</a></td>
+            <td>Vẽ chính xác 33 chòm sao và cửa sổ bầu dục 21° Bắc, xuất PDF khổ A4 chuẩn tỷ lệ 1:1 (thước 5,0 cm) và kiểm tra sai số bán kính.</td>
+          </tr>
+          <tr>
+            <td><strong>Lưu trữ và xuất bản web</strong></td>
+            <td><strong>GitHub &amp; GitHub Pages</strong></td>
+            <td><a class="inline-link mono" href="https://dovinh37.github.io/ban-do-sao-thpt-kinh-mon/" target="_blank" rel="noopener">dovinh37.github.io/ban-do-sao-thpt-kinh-mon</a></td>
+            <td>Lưu trữ mã nguồn mở (<a class="inline-link mono" href="https://github.com/DoVinh37/ban-do-sao-thpt-kinh-mon" target="_blank" rel="noopener">repo GitHub</a>) và tạo 1 đường link web trực tuyến để cô giáo mở xem trực tiếp.</td>
+          </tr>
+          <tr>
+            <td><strong>Định vị và quay dựng</strong></td>
+            <td><strong>Google Maps, winget, Game Bar, FFmpeg</strong></td>
+            <td><a class="inline-link mono" href="https://maps.google.com/" target="_blank" rel="noopener">maps.google.com</a></td>
+            <td>Lấy tọa độ GPS chính xác của trường, cài sạch Stellarium (SHA-256), ghi hình mô phỏng 60 fps và cắt ghép video minh họa.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="doc-footer">
+    <span>Hồ sơ dự án Bản đồ sao quay 21° Bắc · Trường THPT Kinh Môn, phường Kinh Môn, Hải Phòng</span>
+    <span class="mono">28/11/2026</span>
+  </footer>
+</article>
+
+</body>
+</html>
